@@ -1,20 +1,30 @@
 <?php
 	class DecksController extends AppController{
 
-        public $uses = array('Deck','User', 'Card', 'Category', 'Score');
+
+		public $uses = array('Category', 'Deck', 'User', 'Card', 'Score');
+
+		 public function viewall($id = null){
 
 
-		 public function index(){
-
-               // $this->layout = 'flash';
-
+		 	$decks = $this->Deck->find('all', [
+		 		'conditions' => [
+					'Category.id' => $id 
+					],
+					'recursive' => -2       
+		 	        ]);         
+		 	$this->set('decks', $decks);
+			if(empty($decks))
+			{
+		 		$this->set('category_name', "Sorry");
+		 	}
+		 	else{
+		 		$this->set('category_name', $decks[0]['Category']['name']);
 		 	}
 
-		 public function create(){
+		 	$this->set('username', $this->Auth->user('username'));
 
 		 }
-
-
 
 
         public function review($id = 1)
@@ -44,25 +54,7 @@
             $this->set('deck', $deck);
 
         }
-
-
-        public function test($num){
-
-            $data = [
-                Score => [
-                    'score' => $num,
-                    'user_id' => $num,
-                    'deck_id' => $num,
-                ]
-            ];
-            $this->Score->save($data);
-            $this->set('dataNa', "koo return to ajax");
-            return $data;
-        }
-
-
-
-
-		  
 	}
+
+
 ?>
